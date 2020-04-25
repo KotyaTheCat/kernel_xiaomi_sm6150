@@ -40,6 +40,7 @@
 #if NVT_TOUCH_ESD_PROTECT
 #include <linux/jiffies.h>
 #endif /* #if NVT_TOUCH_ESD_PROTECT */
+
 #include "../lct_tp_gesture.h"
 #include "../lct_tp_grip_area.h"
 char g_lcd_id[128];
@@ -1839,20 +1840,17 @@ static int32_t __init nvt_driver_init(void)
 	int32_t ret = 0;
 
 	NVT_LOG("start\n");
-	if (IS_ERR_OR_NULL(g_lcd_id)){
-		NVT_ERR("g_lcd_id is ERROR!\n");
+
+	if (strstr(saved_command_line, "shenchao")) {
+		NVT_LOG("TP info: [Vendor]shenchao [IC]nt36672a\n");
+	} else if (strstr(saved_command_line, "tianma")) {
+		NVT_ERR("LCM is right! [Vendor]tianma [IC]ft8719\n");
 		goto err_lcd;
 	} else {
-		if (strstr(g_lcd_id,"nt36672a video mode dsi shenchao panel") != NULL) {
-			NVT_LOG("LCM is right! [Vendor]shenchao [IC] nt36672a\n");
-		} else if (strstr(g_lcd_id,"ft8719 video mode dsi tianma panel") != NULL) {
-			NVT_ERR("LCM is right! [Vendor]tianma [IC]ft8719\n");
-			goto err_lcd;
-		} else {
-			NVT_ERR("Unknown LCM!\n");
-			goto err_lcd;
-		}
+		NVT_ERR("Unknow Touch\n");
+		goto err_driver;
 	}
+
 	ret = i2c_add_driver(&nvt_i2c_driver);
 	if (ret) {
 		pr_err("%s: failed to add i2c driver", __func__);
