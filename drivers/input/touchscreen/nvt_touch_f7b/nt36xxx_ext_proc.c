@@ -741,22 +741,15 @@ int lct_nvt_tp_info_node_init(void)
     char tp_lockdown_info_buf[64];
     nvt_get_xiaomi_lockdown_info();
     memset(tp_info_buf, 0, sizeof(tp_info_buf));
-    if (IS_ERR_OR_NULL(g_lcd_id)){
-        NVT_ERR("g_lcd_id is ERROR!\n");
-        goto tp_node_init;
-    } else {
-        LOGV("LCM information : %s\n", g_lcd_id);
-        if (strstr(g_lcd_id,"nt36672a video mode dsi shenchao panel") != NULL) {
+
+		if (strstr(saved_command_line, "shenchao")) {
 			sprintf(tp_info_buf, "[Vendor]shenchao,[FW]0x%02x,[IC]nt36672a\n", ts->fw_ver);
-			goto tp_node_init;
-        } else if (strstr(g_lcd_id,"nt36672a video mode dsi tianma panel") != NULL) {
-			sprintf(tp_info_buf, "[Vendor]tianma,[FW]0x%02x,[IC]nt36672a\n", ts->fw_ver);
 			goto tp_node_init;
 		} else {
 			init_lct_tp_info(NULL, NULL);
 			return -ENODEV;
-        }
-    }
+	}
+
 tp_node_init:
     sprintf(tp_lockdown_info_buf, "%02X%02X%02X%02X%04X%02X%02X\n", tp_maker_cg_lamination, display_maker, cg_ink_color, hw_version, project_id, cg_maker, reservation_byte);
     init_lct_tp_info(tp_info_buf, tp_lockdown_info_buf);
