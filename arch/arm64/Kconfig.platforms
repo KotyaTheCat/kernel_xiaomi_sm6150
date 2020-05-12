@@ -346,3 +346,5 @@ config BOARD_F7B
 	bool "Xiaomi F7B Family"
 	depends on ARCH_QCOM
 	select ARCH_SM6150
+
+endmenu
